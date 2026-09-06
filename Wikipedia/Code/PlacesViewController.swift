@@ -2087,6 +2087,17 @@ class PlacesViewController: ArticleLocationCollectionViewController, UISearchBar
         currentSearch = nil // will cause the default search to perform after re-centering
         recenterOnUserLocation(self)
     }
+    
+    @objc public func showCoordinate(latitude: Double, longitude: Double) {
+        guard view != nil else {
+            return
+        }
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let region = [coordinate].wmf_boundingRegion(with: 10000)
+        mapRegion = region
+        let localizedDescription = WMFLocalizedString("places-search-top-articles", value: "All top articles", comment: "")
+        currentSearch = PlaceSearch(filter: currentSearchFilter, type: .location, origin: .system, sortStyle: .links, string: nil, region: region, localizedDescription: localizedDescription, searchResult: nil)
+    }
 
     @objc public func showArticleURL(_ articleURL: URL) {
         guard let article = dataStore.fetchArticle(with: articleURL), let title = articleURL.wmf_title,
